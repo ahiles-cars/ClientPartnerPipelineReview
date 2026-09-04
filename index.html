@@ -1,0 +1,478 @@
+<title>Pipeline Coverage Radar</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+  --bg:#FBFAFC; --panel:#FFFFFF; --panel2:#F7F3FB; --tint:#F4EEFC;
+  --ink:#2A0A3D; --ink2:#5B4A6E; --muted:#8A7C99; --line:#E7E2EE; --line2:#EDE8F3;
+  --brand:#7A2E9E; --orchid:#A74DCE; --lilac:#C09BEC;
+  --under:#C0392B; --under-bg:#FBEAE7; --watch:#C77D12; --watch-bg:#FBF1DF;
+  --covered:#2E8B57; --covered-bg:#E7F3EC; --attain:#1C6E44; --attain-bg:#E2F0E8;
+  --st1:#EBDDF6; --st2:#CDA9E8; --st3:#A76BD1; --st4:#6B2A8F;
+  --openc:#6E6A7A; --open-bg:#EEECEF;
+  --shadow:0 1px 2px rgba(42,10,61,.06),0 4px 16px rgba(42,10,61,.05);
+}
+:root:not([data-theme="light"]){}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#161019; --panel:#1F1727; --panel2:#241B2E; --tint:#2A1F36;
+  --ink:#F3ECF8; --ink2:#C9BCD8; --muted:#9C8DAE; --line:#332741; --line2:#2C2138;
+  --brand:#C58BE0; --orchid:#BE72DE; --lilac:#C09BEC;
+  --under:#F0776A; --under-bg:#3A2320; --watch:#E7A93F; --watch-bg:#382b16;
+  --covered:#67C58E; --covered-bg:#1E3227; --attain:#7FD3A3; --attain-bg:#1C2E24;
+  --st1:#3A2D49; --st2:#5B3E77; --st3:#8A55B0; --st4:#C08AE0;
+  --openc:#9C96AC; --open-bg:#2B2436;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.28);
+}}
+[data-theme="dark"]{
+  --bg:#161019; --panel:#1F1727; --panel2:#241B2E; --tint:#2A1F36;
+  --ink:#F3ECF8; --ink2:#C9BCD8; --muted:#9C8DAE; --line:#332741; --line2:#2C2138;
+  --brand:#C58BE0; --orchid:#BE72DE; --lilac:#C09BEC;
+  --under:#F0776A; --under-bg:#3A2320; --watch:#E7A93F; --watch-bg:#382b16;
+  --covered:#67C58E; --covered-bg:#1E3227; --attain:#7FD3A3; --attain-bg:#1C2E24;
+  --st1:#3A2D49; --st2:#5B3E77; --st3:#8A55B0; --st4:#C08AE0;
+  --openc:#9C96AC; --open-bg:#2B2436;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.28);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Public Sans",-apple-system,Segoe UI,Roboto,sans-serif;
+  font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
+h1,h2,h3,.num{font-family:"Poppins","Public Sans",sans-serif}
+.wrap{max-width:1220px;margin:0 auto;padding:0 20px 64px}
+.tnum{font-variant-numeric:tabular-nums}
+a{color:var(--orchid)}
+
+/* header */
+header{background:linear-gradient(120deg,#2A0A3D,#47265E 70%,#5c2f77);color:#fff}
+.hd{max-width:1220px;margin:0 auto;padding:20px;display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:30px;height:30px;flex:none}
+.brand .k{font-family:"Poppins";font-weight:700;letter-spacing:.14em;font-size:12px;opacity:.85;text-transform:uppercase}
+.brand h1{margin:2px 0 0;font-size:22px;font-weight:700;letter-spacing:-.01em}
+.hd .meta{text-align:right;font-size:12.5px;opacity:.9;line-height:1.5}
+.hd .meta b{font-weight:600}
+.themebtn{margin-top:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#fff;
+  border-radius:8px;padding:5px 10px;font-size:12px;cursor:pointer;font-family:inherit}
+.themebtn:hover{background:rgba(255,255,255,.2)}
+
+/* method strip */
+.method{background:var(--tint);border-bottom:1px solid var(--line)}
+.method .in{max-width:1220px;margin:0 auto;padding:9px 20px;font-size:12.5px;color:var(--ink2)}
+.method b{color:var(--ink);font-weight:600}
+
+/* filters */
+.filters{position:sticky;top:0;z-index:30;background:var(--bg);border-bottom:1px solid var(--line);
+  padding:10px 0;margin-bottom:18px}
+.filters .in{max-width:1220px;margin:0 auto;padding:0 20px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.filters .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-right:4px}
+.chip{border:1px solid var(--line);background:var(--panel);color:var(--ink2);border-radius:20px;
+  padding:6px 13px;font-size:13px;cursor:pointer;font-family:inherit;transition:.12s}
+.chip:hover{border-color:var(--orchid);color:var(--ink)}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+[data-theme="dark"] .chip.on,:root:not([data-theme="light"]) .chip.on{background:var(--orchid);border-color:var(--orchid);color:#1a1020}
+
+/* KPI band */
+.kpis{display:grid;grid-template-columns:1.3fr repeat(4,1fr);gap:12px;margin-bottom:14px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow)}
+.kpi .cap{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+.kpi .v{font-size:26px;font-weight:700;margin-top:4px;letter-spacing:-.02em}
+.kpi .sub{font-size:12px;color:var(--ink2);margin-top:2px}
+.kpi.hero{background:linear-gradient(135deg,var(--panel),var(--panel2));border-color:var(--line)}
+.gauge{display:flex;align-items:center;gap:14px}
+.donut{width:70px;height:70px;flex:none}
+.covbig{font-size:32px;font-weight:700;line-height:1;font-family:"Poppins"}
+.tag{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:20px;white-space:nowrap}
+.dot{width:8px;height:8px;border-radius:50%;flex:none}
+.t-under{background:var(--under-bg);color:var(--under)} .t-watch{background:var(--watch-bg);color:var(--watch)}
+.t-covered{background:var(--covered-bg);color:var(--covered)} .t-attain{background:var(--attain-bg);color:var(--attain)}
+.t-open{background:var(--open-bg);color:var(--openc)}
+.b-under{background:var(--under)} .b-watch{background:var(--watch)} .b-covered{background:var(--covered)} .b-attain{background:var(--attain)} .b-open{background:var(--openc)}
+
+/* section */
+section{margin-top:26px}
+.sh{display:flex;align-items:baseline;gap:10px;margin-bottom:4px}
+.sh h2{font-size:17px;margin:0;letter-spacing:-.01em}
+.sh .n{font-size:12.5px;color:var(--muted)}
+.sdesc{font-size:13px;color:var(--ink2);margin:0 0 14px;max-width:74ch}
+.grid2{display:grid;grid-template-columns:1.5fr 1fr;gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;box-shadow:var(--shadow)}
+.card h3{font-size:13px;margin:0 0 2px;font-weight:600}
+.card .ch-sub{font-size:12px;color:var(--muted);margin:0 0 12px}
+
+/* bar rows */
+.brow{display:grid;grid-template-columns:132px 1fr 66px;align-items:center;gap:10px;padding:3px 0;cursor:default}
+.brow .nm{font-size:12.5px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brow .nm .rg{color:var(--muted);font-size:11px}
+.track{position:relative;height:16px;background:var(--line2);border-radius:4px;overflow:visible}
+.fill{height:100%;border-radius:4px;min-width:2px}
+.rl{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--muted);opacity:.5}
+.rl.rl15{background:var(--covered);opacity:.55}
+.brow .rt{font-size:12.5px;font-weight:700;text-align:right}
+.axis{display:grid;grid-template-columns:132px 1fr 66px;gap:10px;font-size:10.5px;color:var(--muted);margin-top:6px}
+.axis .sc{position:relative;height:12px}
+.axis .tk{position:absolute;transform:translateX(-50%)}
+
+/* quadrant */
+.quad{width:100%;height:auto;display:block}
+.legrow{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--ink2);margin-top:8px}
+.legrow span{display:inline-flex;align-items:center;gap:5px}
+
+/* website bars */
+.web{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.wcard{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:13px 14px;box-shadow:var(--shadow)}
+.wcard .wtop{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px}
+.wcard .wrg{font-weight:600;font-size:13.5px}
+.wcard .wt{font-size:11.5px;color:var(--muted)}
+.wbar{height:22px;background:var(--line2);border-radius:5px;position:relative;overflow:hidden;display:flex}
+.wseg{height:100%}
+.wtarget{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink);z-index:2}
+.wnums{display:flex;justify-content:space-between;font-size:11.5px;margin-top:7px;color:var(--ink2)}
+.wnums b{color:var(--ink)}
+
+/* action panels */
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.alist{list-style:none;margin:8px 0 0;padding:0}
+.alist li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line2);font-size:13px}
+.alist li:last-child{border-bottom:0}
+.alist .who{font-weight:600}
+.alist .det{font-size:12px;color:var(--muted)}
+.alist .rr{font-weight:700;font-size:13px}
+
+/* table */
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+.tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}
+thead th{position:sticky;top:0;background:var(--ink);color:#fff;font-weight:600;font-size:11px;
+  text-transform:uppercase;letter-spacing:.04em;padding:9px 10px;text-align:right;white-space:nowrap;cursor:pointer;user-select:none}
+thead th:first-child,thead th:nth-child(2){text-align:left}
+tbody td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--line2);white-space:nowrap}
+tbody td:first-child,tbody td:nth-child(2){text-align:left}
+tbody tr:hover{background:var(--tint)}
+tbody td.nm{font-weight:600}
+.rowtag{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:2px;vertical-align:middle}
+.foot{font-size:11.5px;color:var(--muted);margin-top:26px;line-height:1.6;border-top:1px solid var(--line);padding-top:14px}
+
+/* tooltip */
+#tip{position:fixed;z-index:100;pointer-events:none;background:var(--ink);color:#fff;padding:9px 11px;border-radius:9px;
+  font-size:12px;box-shadow:0 8px 24px rgba(0,0,0,.28);max-width:250px;opacity:0;transition:opacity .1s;line-height:1.5}
+#tip b{color:#fff} #tip .r{display:flex;justify-content:space-between;gap:16px}
+#tip .r span:first-child{color:#d9c9e6}
+@media(max-width:900px){.kpis{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}.acts{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Public+Sans:wght@400;500;600;700&display=swap">
+
+<header>
+  <div class="hd">
+    <div class="brand">
+      <svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><rect x="14" y="4" width="8" height="14" rx="1.5" fill="#C09BEC"/><rect x="16" y="15" width="15" height="15" rx="2" fill="#A74DCE"/><rect x="6" y="20" width="11" height="10" rx="1.5" fill="#0F9ED5"/><rect x="15" y="30" width="7" height="7" rx="1.2" fill="#E97132"/></svg>
+      <div><div class="k">Cars Commerce</div><h1>Pipeline Coverage Radar</h1></div>
+    </div>
+    <div class="meta">
+      <div><b>Reporting month:</b> September 2026</div>
+      <div><b>Data as of:</b> Sep 4, 2026 &nbsp;•&nbsp; 2H26 (Jul–Dec)</div>
+      <button class="themebtn" id="themebtn">◑ Theme</button>
+    </div>
+  </div>
+</header>
+<div class="method"><div class="in">
+  <b>Coverage</b> = open September pipeline ÷ this-month gap to goal, where the monthly target is each seat's 2H goal ÷ 6.
+  A seat reads <b style="color:var(--under)">Under-covered</b> below 1.0×, <b style="color:var(--watch)">Watch</b> 1.0–1.5×, <b style="color:var(--covered)">Covered</b> at 1.5×+.
+  Hover any bar or dot for the detail.
+</div></div>
+
+<div class="filters"><div class="in">
+  <span class="lbl">Team</span>
+  <button class="chip on" data-team="All">All teams</button>
+  <button class="chip" data-team="Field East">Field East</button>
+  <button class="chip" data-team="Field West">Field West</button>
+  <button class="chip" data-team="Inside">Inside</button>
+  <button class="chip" data-team="Majors">Majors</button>
+</div></div>
+
+<div class="wrap">
+  <div class="kpis" id="kpis"></div>
+
+  <section>
+    <div class="sh"><h2>Revenue coverage</h2><span class="n">by Client Partner · September gap to goal</span></div>
+    <p class="sdesc">The gap is what each seat still needs to book this month; the bar is how many times over their open pipeline covers it. Short red bars are the seats to work — plenty of quota left and not enough pipeline behind it.</p>
+    <div class="grid2">
+      <div class="card">
+        <h3>Coverage by seller <span style="font-weight:400;color:var(--muted)">(low → high)</span></h3>
+        <p class="ch-sub">Bar = pipeline ÷ monthly gap, capped at 4×. Grey line = 1.0× (break-even), green line = 1.5× (target).</p>
+        <div id="sellerbars"></div>
+      </div>
+      <div class="card">
+        <h3>Where — coverage by region</h3>
+        <p class="ch-sub">Region pipeline ÷ region monthly gap.</p>
+        <div id="regionbars"></div>
+        <h3 style="margin-top:18px">Risk map</h3>
+        <p class="ch-sub">Half-elapsed pace is ~33% attainment. Bottom-left = behind on the half <em>and</em> thin on pipeline.</p>
+        <div id="quad"></div>
+        <div class="legrow">
+          <span><span class="dot b-under"></span>Under</span>
+          <span><span class="dot b-watch"></span>Watch</span>
+          <span><span class="dot b-covered"></span>Covered</span>
+          <span><span class="dot b-attain"></span>At/over goal</span>
+          <span style="color:var(--muted)">● size = $ gap</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sh"><h2>Website coverage</h2><span class="n">vs VP regional target</span></div>
+    <p class="sdesc" id="webdesc"></p>
+    <div class="web" id="webcards"></div>
+  </section>
+
+  <section>
+    <div class="card" id="openpanel" style="border-top:3px solid var(--openc);margin-bottom:16px;display:none">
+      <div class="sh" style="margin-bottom:2px"><h3 style="font-size:14px">Open territories — coverage at structural risk</h3></div>
+      <p class="ch-sub" id="opensub"></p>
+      <ul class="alist" id="openlist" style="display:grid;grid-template-columns:1fr 1fr;gap:0 28px"></ul>
+    </div>
+    <div class="acts">
+      <div class="card" style="border-top:3px solid var(--under)">
+        <h3>Under-covered — build pipeline now</h3>
+        <p class="ch-sub">Largest monthly gap with coverage under 1.0×.</p>
+        <ul class="alist" id="underlist"></ul>
+      </div>
+      <div class="card" style="border-top:3px solid var(--covered)">
+        <h3>Over-covered — pull forward / reallocate</h3>
+        <p class="ch-sub">Coverage 1.5×+ or already at goal — capacity to advance deals or coach peers.</p>
+        <ul class="alist" id="overlist"></ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sh"><h2>All seats</h2><span class="n">click a column to sort</span></div>
+    <div class="tblwrap"><table id="tbl"><thead><tr>
+      <th data-k="name" data-t="1">Client Partner</th><th data-k="region" data-t="1">Region</th>
+      <th data-k="goal_2h">2H Goal</th><th data-k="monthly_target">Mo. Target</th>
+      <th data-k="secured">Won (Sep)</th><th data-k="gap">Gap</th>
+      <th data-k="pipeline">Pipeline</th><th data-k="weighted">Wtd Pipe</th>
+      <th data-k="coverage">Coverage</th><th data-k="exp_coverage">Exp. Cov</th><th data-k="ptd_attain">2H Attain</th>
+    </tr></thead><tbody id="tbody"></tbody></table></div>
+  </section>
+
+  <div class="foot">
+    <b>Method.</b> Coverage is a monthly-phased read: monthly target = 2H26 goal ÷ 6; gap = monthly target − September Closed Won; coverage = open September pipeline ÷ gap (a seat already at target shows no gap and is "At/over goal"). Expected (weighted) coverage discounts open pipeline by stage — Closing 80%, Presentation 40%, Follow-Up 25%, Discovery 10% — to reflect realistic close probability this month. Website coverage = open website opportunities ÷ (VP target − sold). Figures aggregate by Client Partner and roll to region per the hierarchy; off-roster owners are folded into their region. Source: CPPipelineTemplate942026.xlsx, all September close dates. Pipeline reconciles to $1,879,956.
+  </div>
+</div>
+<div id="tip"></div>
+
+<script>
+const DATA={"sellers":[{"region":"Florida","team":"Field East","name":"Michelle McKenna","is_extra":false,"goal_2h":293000,"monthly_target":48833,"secured":0,"gap":48833,"pipeline":154097,"weighted":49032,"closing":4427,"presentation":95202,"followup":13085,"discovery":41383,"coverage":3.16,"exp_coverage":1.0,"ptd_attain":0.419,"status":"covered","open":false},{"region":"Great Lakes","team":"Field East","name":"OPEN \u2014 Great Lakes","is_extra":false,"goal_2h":163500,"monthly_target":27250,"secured":0,"gap":27250,"pipeline":0,"weighted":0,"closing":0,"presentation":0,"followup":0,"discovery":0,"coverage":0.0,"exp_coverage":0.0,"ptd_attain":0.119,"status":"under","open":true},{"region":"Great Lakes","team":"Field East","name":"Robert Kwasneski","is_extra":false,"goal_2h":162000,"monthly_target":27000,"secured":50,"gap":26950,"pipeline":9298,"weighted":1230,"closing":0,"presentation":1000,"followup":0,"discovery":8298,"coverage":0.35,"exp_coverage":0.05,"ptd_attain":0.176,"status":"under","open":false},{"region":"Great Lakes","team":"Field East","name":"Great Lakes (team)","is_extra":true,"goal_2h":0,"monthly_target":0,"secured":4423,"gap":0,"pipeline":26405,"weighted":3170,"closing":50,"presentation":1000,"followup":1295,"discovery":24060,"coverage":null,"exp_coverage":null,"ptd_attain":null,"status":"attained","open":false},{"region":"MidAtlantic","team":"Field East","name":"OPEN \u2014 MidAtlantic","is_extra":false,"goal_2h":233000,"monthly_target":38833,"secured":0,"gap":38833,"pipeline":0,"weighted":0,"closing":0,"presentation":0,"followup":0,"discovery":0,"coverage":0.0,"exp_coverage":0.0,"ptd_attain":0.088,"status":"under","open":true},{"region":"MidAtlantic","team":"Field East","name":"MidAtlantic (team)","is_extra":true,"goal_2h":0,"monthly_target":0,"secured":0,"gap":0,"pipeline":7991,"weighted":799,"closing":0,"presentation":0,"followup":0,"discovery":7991,"coverage":null,"exp_coverage":null,"ptd_attain":null,"status":"attained","open":false},{"region":"MidSouth","team":"Field East","name":"Justin Tuttle","is_extra":false,"goal_2h":171000,"monthly_target":28500,"secured":0,"gap":28500,"pipeline":47963,"weighted":13844,"closing":0,"presentation":19852,"followup":20611,"discovery":7500,"coverage":1.68,"exp_coverage":0.49,"ptd_attain":0.186,"status":"covered","open":false},{"region":"MidSouth","team":"Field East","name":"Emanuel Lopez","is_extra":false,"goal_2h":178500,"monthly_target":29750,"secured":0,"gap":29750,"pipeline":31678,"weighted":7574,"closing":0,"presentation":13699,"followup":1979,"discovery":16000,"coverage":1.06,"exp_coverage":0.25,"ptd_attain":0.202,"status":"watch","open":false},{"region":"MidSouth","team":"Field East","name":"MidSouth (team)","is_extra":true,"goal_2h":0,"monthly_target":0,"secured":0,"gap":0,"pipeline":0,"weighted":0,"closing":0,"presentation":0,"followup":0,"discovery":0,"coverage":null,"exp_coverage":null,"ptd_attain":null,"status":"attained","open":false},{"region":"Northeast","team":"Field East","name":"Clinton Estell","is_extra":false,"goal_2h":197250,"monthly_target":32875,"secured":0,"gap":32875,"pipeline":42620,"weighted":9105,"closing":726,"presentation":14448,"followup":0,"discovery":27446,"coverage":1.3,"exp_coverage":0.28,"ptd_attain":0.045,"status":"watch","open":false},{"region":"Northeast","team":"Field East","name":"Al Gianmarino","is_extra":false,"goal_2h":185250,"monthly_target":30875,"secured":0,"gap":30875,"pipeline":45711,"weighted":13679,"closing":2000,"presentation":19075,"followup":13238,"discovery":11398,"coverage":1.48,"exp_coverage":0.44,"ptd_attain":0.195,"status":"watch","open":false},{"region":"Midwest","team":"Field West","name":"Chris Monforton","is_extra":false,"goal_2h":160000,"monthly_target":26667,"secured":2679,"gap":23988,"pipeline":40621,"weighted":11265,"closing":0,"presentation":15497,"followup":17027,"discovery":8097,"coverage":1.69,"exp_coverage":0.47,"ptd_attain":0.162,"status":"covered","open":false},{"region":"Midwest","team":"Field West","name":"Madyson Lawrence","is_extra":false,"goal_2h":186750,"monthly_target":31125,"secured":8631,"gap":22494,"pipeline":154755,"weighted":41283,"closing":6598,"presentation":65255,"followup":10748,"discovery":72154,"coverage":6.88,"exp_coverage":1.84,"ptd_attain":0.375,"status":"covered","open":false},{"region":"Northwest","team":"Field West","name":"Rob Karamanlian","is_extra":false,"goal_2h":166100,"monthly_target":27683,"secured":0,"gap":27683,"pipeline":63644,"weighted":20714,"closing":14499,"presentation":14000,"followup":0,"discovery":35145,"coverage":2.3,"exp_coverage":0.75,"ptd_attain":0.185,"status":"covered","open":false},{"region":"Northwest","team":"Field West","name":"Barrett Morrill","is_extra":false,"goal_2h":169100,"monthly_target":28183,"secured":2364,"gap":25819,"pipeline":10962,"weighted":4525,"closing":1100,"presentation":8862,"followup":0,"discovery":1000,"coverage":0.42,"exp_coverage":0.18,"ptd_attain":0.104,"status":"under","open":false},{"region":"Southwest","team":"Field West","name":"Shelley Rutherford","is_extra":false,"goal_2h":182968,"monthly_target":30495,"secured":0,"gap":30495,"pipeline":56460,"weighted":11370,"closing":300,"presentation":5950,"followup":24860,"discovery":25350,"coverage":1.85,"exp_coverage":0.37,"ptd_attain":0.416,"status":"covered","open":false},{"region":"Southwest","team":"Field West","name":"Dane Cronbaugh","is_extra":false,"goal_2h":164000,"monthly_target":27333,"secured":1363,"gap":25970,"pipeline":67408,"weighted":32360,"closing":20587,"presentation":33899,"followup":6923,"discovery":5999,"coverage":2.6,"exp_coverage":1.25,"ptd_attain":0.274,"status":"covered","open":false},{"region":"Texas","team":"Field West","name":"April Schenk","is_extra":false,"goal_2h":267216,"monthly_target":44536,"secured":1845,"gap":42691,"pipeline":187915,"weighted":68904,"closing":550,"presentation":160161,"followup":11197,"discovery":16007,"coverage":4.4,"exp_coverage":1.61,"ptd_attain":0.297,"status":"covered","open":false},{"region":"Inside","team":"Inside","name":"Mohammad Alam","is_extra":false,"goal_2h":171000,"monthly_target":28500,"secured":450,"gap":28050,"pipeline":88928,"weighted":29591,"closing":5383,"presentation":55184,"followup":2498,"discovery":25863,"coverage":3.17,"exp_coverage":1.05,"ptd_attain":0.22,"status":"covered","open":false},{"region":"Inside","team":"Inside","name":"Stephanie Watson","is_extra":false,"goal_2h":171000,"monthly_target":28500,"secured":1818,"gap":26682,"pipeline":49011,"weighted":11718,"closing":4168,"presentation":11999,"followup":1995,"discovery":30849,"coverage":1.84,"exp_coverage":0.44,"ptd_attain":0.308,"status":"covered","open":false},{"region":"Inside","team":"Inside","name":"Dan Monk","is_extra":false,"goal_2h":171000,"monthly_target":28500,"secured":500,"gap":28000,"pipeline":47235,"weighted":13398,"closing":3349,"presentation":18833,"followup":4532,"discovery":20521,"coverage":1.69,"exp_coverage":0.48,"ptd_attain":0.523,"status":"covered","open":false},{"region":"Inside","team":"Inside","name":"Mike Egan","is_extra":false,"goal_2h":171000,"monthly_target":28500,"secured":400,"gap":28100,"pipeline":189712,"weighted":54766,"closing":0,"presentation":112346,"followup":13943,"discovery":63423,"coverage":6.75,"exp_coverage":1.95,"ptd_attain":0.104,"status":"covered","open":false},{"region":"Inside","team":"Inside","name":"OPEN \u2014 Inside","is_extra":false,"goal_2h":171000,"monthly_target":28500,"secured":0,"gap":28500,"pipeline":0,"weighted":0,"closing":0,"presentation":0,"followup":0,"discovery":0,"coverage":0.0,"exp_coverage":0.0,"ptd_attain":0.037,"status":"under","open":true},{"region":"Inside","team":"Inside","name":"Inside (team)","is_extra":true,"goal_2h":0,"monthly_target":0,"secured":0,"gap":0,"pipeline":143944,"weighted":32429,"closing":2939,"presentation":49637,"followup":7240,"discovery":84128,"coverage":null,"exp_coverage":null,"ptd_attain":null,"status":"attained","open":false},{"region":"Majors","team":"Majors","name":"Ryan Kwasneski","is_extra":false,"goal_2h":432000,"monthly_target":72000,"secured":1105,"gap":70895,"pipeline":152746,"weighted":76397,"closing":38246,"presentation":114500,"followup":0,"discovery":0,"coverage":2.15,"exp_coverage":1.08,"ptd_attain":0.191,"status":"covered","open":false},{"region":"Majors","team":"Majors","name":"Ryan Altier","is_extra":false,"goal_2h":450000,"monthly_target":75000,"secured":33877,"gap":41123,"pipeline":201347,"weighted":76579,"closing":10649,"presentation":163299,"followup":0,"discovery":27399,"coverage":4.9,"exp_coverage":1.86,"ptd_attain":0.217,"status":"covered","open":false},{"region":"Majors","team":"Majors","name":"OPEN \u2014 Majors","is_extra":false,"goal_2h":432000,"monthly_target":72000,"secured":0,"gap":72000,"pipeline":0,"weighted":0,"closing":0,"presentation":0,"followup":0,"discovery":0,"coverage":0.0,"exp_coverage":0.0,"ptd_attain":0.242,"status":"under","open":true}],"regions":[{"region":"Florida","team":"Field East","monthly_target":48833,"secured":0,"gap":48833,"pipeline":154097,"weighted":49032,"closing":4427,"presentation":95202,"followup":13085,"discovery":41383,"goal_2h":293000,"coverage":3.16,"exp_coverage":1.0,"status":"covered"},{"region":"Great Lakes","team":"Field East","monthly_target":54250,"secured":4473,"gap":49777,"pipeline":35703,"weighted":4400,"closing":50,"presentation":2000,"followup":1295,"discovery":32358,"goal_2h":325500,"coverage":0.72,"exp_coverage":0.09,"status":"under"},{"region":"MidAtlantic","team":"Field East","monthly_target":38833,"secured":0,"gap":38833,"pipeline":7991,"weighted":799,"closing":0,"presentation":0,"followup":0,"discovery":7991,"goal_2h":233000,"coverage":0.21,"exp_coverage":0.02,"status":"under"},{"region":"MidSouth","team":"Field East","monthly_target":58250,"secured":0,"gap":58250,"pipeline":79641,"weighted":21418,"closing":0,"presentation":33551,"followup":22590,"discovery":23500,"goal_2h":349500,"coverage":1.37,"exp_coverage":0.37,"status":"watch"},{"region":"Northeast","team":"Field East","monthly_target":63750,"secured":0,"gap":63750,"pipeline":88331,"weighted":22784,"closing":2726,"presentation":33523,"followup":13238,"discovery":38844,"goal_2h":382500,"coverage":1.39,"exp_coverage":0.36,"status":"watch"},{"region":"Midwest","team":"Field West","monthly_target":57792,"secured":11310,"gap":46482,"pipeline":195376,"weighted":52548,"closing":6598,"presentation":80752,"followup":27775,"discovery":80251,"goal_2h":346750,"coverage":4.2,"exp_coverage":1.13,"status":"covered"},{"region":"Northwest","team":"Field West","monthly_target":55866,"secured":2364,"gap":53502,"pipeline":74606,"weighted":25239,"closing":15599,"presentation":22862,"followup":0,"discovery":36145,"goal_2h":335200,"coverage":1.39,"exp_coverage":0.47,"status":"watch"},{"region":"Southwest","team":"Field West","monthly_target":57828,"secured":1363,"gap":56465,"pipeline":123868,"weighted":43730,"closing":20887,"presentation":39849,"followup":31783,"discovery":31349,"goal_2h":346968,"coverage":2.19,"exp_coverage":0.77,"status":"covered"},{"region":"Texas","team":"Field West","monthly_target":44536,"secured":1845,"gap":42691,"pipeline":187915,"weighted":68904,"closing":550,"presentation":160161,"followup":11197,"discovery":16007,"goal_2h":267216,"coverage":4.4,"exp_coverage":1.61,"status":"covered"},{"region":"Inside","team":"Inside","monthly_target":142500,"secured":3168,"gap":139332,"pipeline":518830,"weighted":141902,"closing":15839,"presentation":247999,"followup":30208,"discovery":224784,"goal_2h":855000,"coverage":3.72,"exp_coverage":1.02,"status":"covered"},{"region":"Majors","team":"Majors","monthly_target":219000,"secured":34982,"gap":184018,"pipeline":354093,"weighted":152976,"closing":48895,"presentation":277799,"followup":0,"discovery":27399,"goal_2h":1314000,"coverage":1.92,"exp_coverage":0.83,"status":"covered"}],"web":[{"region":"Florida","target":8,"sold":0,"closing":2,"followup":4,"early":3,"remaining":8,"pipe_opps":9,"coverage":1.12,"weighted":3.2,"exp_coverage":0.4,"status":"watch"},{"region":"Great Lakes","target":8,"sold":2,"closing":0,"followup":0,"early":11,"remaining":6,"pipe_opps":11,"coverage":1.83,"weighted":2.2,"exp_coverage":0.37,"status":"covered"},{"region":"MidAtlantic","target":7,"sold":0,"closing":0,"followup":0,"early":4,"remaining":7,"pipe_opps":4,"coverage":0.57,"weighted":0.8,"exp_coverage":0.11,"status":"under"},{"region":"MidSouth","target":5,"sold":0,"closing":0,"followup":4,"early":2,"remaining":5,"pipe_opps":6,"coverage":1.2,"weighted":1.4,"exp_coverage":0.28,"status":"watch"},{"region":"Northeast","target":8,"sold":0,"closing":1,"followup":0,"early":2,"remaining":8,"pipe_opps":3,"coverage":0.38,"weighted":1.2,"exp_coverage":0.15,"status":"under"},{"region":"Midwest","target":7,"sold":0,"closing":0,"followup":1,"early":1,"remaining":7,"pipe_opps":2,"coverage":0.29,"weighted":0.5,"exp_coverage":0.06,"status":"under"},{"region":"Northwest","target":10,"sold":1,"closing":0,"followup":0,"early":7,"remaining":9,"pipe_opps":7,"coverage":0.78,"weighted":1.4,"exp_coverage":0.16,"status":"under"},{"region":"Southwest","target":9,"sold":1,"closing":0,"followup":2,"early":1,"remaining":8,"pipe_opps":3,"coverage":0.38,"weighted":0.7,"exp_coverage":0.09,"status":"under"},{"region":"Texas","target":10,"sold":1,"closing":0,"followup":1,"early":1,"remaining":9,"pipe_opps":2,"coverage":0.22,"weighted":0.5,"exp_coverage":0.05,"status":"under"},{"region":"Inside","target":19,"sold":1,"closing":4,"followup":10,"early":16,"remaining":18,"pipe_opps":30,"coverage":1.67,"weighted":8.9,"exp_coverage":0.49,"status":"covered"},{"region":"Majors","target":30,"sold":0,"closing":1,"followup":0,"early":1,"remaining":30,"pipe_opps":2,"coverage":0.07,"weighted":1.0,"exp_coverage":0.03,"status":"under"}],"company":{"monthly_target":841438,"secured":59505,"pipeline":1820451,"weighted":583732,"goal_2h":5048634,"gap":781933,"coverage":2.33,"exp_coverage":0.75,"n_under":6,"n_watch":3,"n_covered":14,"pipe_total":1879956},"weights":{"Closing":0.8,"Presentation":0.4,"FollowUp":0.25,"Discovery":0.1},"month":"September 2026","as_of":"Sep 4, 2026"};
+const fmtK=v=>v>=1000?'$'+(v/1000).toFixed(v>=100000?0:1)+'k':'$'+Math.round(v);
+const fmt$=v=>'$'+Math.round(v).toLocaleString();
+const STAT={under:['Under-covered','b-under','t-under','var(--under)'],watch:['Watch','b-watch','t-watch','var(--watch)'],
+  covered:['Covered','b-covered','t-covered','var(--covered)'],attain:['At/over goal','b-attain','t-attain','var(--attain)'],
+  open:['Open seat','b-open','t-open','var(--openc)']};
+function stkey(s){return s.open?'open':(s.status==='attained'?'attain':s.status)}
+function scolor(s){return getComputedStyle(document.documentElement).getPropertyValue(STAT[stkey(s)][3].slice(4,-1))||STAT[stkey(s)][3]}
+let team='All';
+const realSellers=()=>DATA.sellers.filter(s=>!s.is_extra);
+const fSellers=()=>DATA.sellers.filter(s=>team==='All'||s.team===team);
+const fRegions=()=>DATA.regions.filter(r=>team==='All'||r.team===team);
+const fWeb=()=>{const rs=new Set(fRegions().map(r=>r.region));return DATA.web.filter(w=>rs.has(w.region))};
+
+const tip=document.getElementById('tip');
+function showTip(html,e){tip.innerHTML=html;tip.style.opacity=1;moveTip(e)}
+function moveTip(e){const p=12;let x=e.clientX+p,y=e.clientY+p;
+  const r=tip.getBoundingClientRect();if(x+r.width>innerWidth)x=e.clientX-r.width-p;if(y+r.height>innerHeight)y=e.clientY-r.height-p;
+  tip.style.left=x+'px';tip.style.top=y+'px'}
+function hideTip(){tip.style.opacity=0}
+const trow=(k,v)=>`<div class="r"><span>${k}</span><b>${v}</b></div>`;
+
+function kpis(){
+  const S=fSellers();
+  const sum=k=>S.reduce((a,s)=>a+(s[k]||0),0);
+  const mt=sum('monthly_target'),sec=sum('secured'),pipe=sum('pipeline'),wtd=sum('weighted');
+  const gap=Math.max(mt-sec,0);const cov=gap>0?pipe/gap:null;const ecov=gap>0?wtd/gap:null;
+  const R=S.filter(s=>!s.is_extra&&!s.open);
+  const nu=R.filter(s=>s.status==='under').length,nw=R.filter(s=>s.status==='watch').length,
+        nc=R.filter(s=>s.status==='covered'||s.status==='attained').length,
+        no=S.filter(s=>s.open).length;
+  const covst=cov==null?'attain':(cov<1?'under':(cov<1.5?'watch':'covered'));
+  const cc=STAT[covst][3];
+  const pct=Math.min(cov?cov/3:1,1);const circ=2*Math.PI*30;const off=circ*(1-pct);
+  document.getElementById('kpis').innerHTML=`
+   <div class="kpi hero"><div class="cap">Team coverage · this month</div>
+     <div class="gauge" style="margin-top:8px">
+       <svg class="donut" viewBox="0 0 70 70"><circle cx="35" cy="35" r="30" fill="none" stroke="var(--line2)" stroke-width="8"/>
+         <circle cx="35" cy="35" r="30" fill="none" stroke="${cc}" stroke-width="8" stroke-linecap="round"
+           stroke-dasharray="${circ}" stroke-dashoffset="${off}" transform="rotate(-90 35 35)"/></svg>
+       <div><div class="covbig" style="color:${cc}">${cov==null?'∞':cov.toFixed(2)+'×'}</div>
+         <div class="sub" style="margin-top:3px">${fmtK(pipe)} pipeline ÷ ${fmtK(gap)} gap</div>
+         <div class="sub">Expected (weighted): <b>${ecov==null?'∞':ecov.toFixed(2)+'×'}</b></div></div>
+     </div></div>
+   <div class="kpi"><div class="cap">Monthly target</div><div class="v tnum">${fmtK(mt)}</div><div class="sub">2H goal ÷ 6</div></div>
+   <div class="kpi"><div class="cap">Won so far (Sep)</div><div class="v tnum">${fmtK(sec)}</div><div class="sub">${(sec/mt*100).toFixed(0)}% of monthly target</div></div>
+   <div class="kpi"><div class="cap">Gap to fill</div><div class="v tnum" style="color:var(--under)">${fmtK(gap)}</div><div class="sub">still to book this month</div></div>
+   <div class="kpi"><div class="cap">Seats by status</div>
+     <div class="v tnum" style="font-size:20px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+       <span class="tag t-under"><span class="dot b-under"></span>${nu}</span>
+       <span class="tag t-watch"><span class="dot b-watch"></span>${nw}</span>
+       <span class="tag t-covered"><span class="dot b-covered"></span>${nc}</span>
+       ${no?`<span class="tag t-open"><span class="dot b-open"></span>${no}</span>`:''}</div>
+     <div class="sub" style="margin-top:6px">under · watch · covered${no?' · open':''}</div></div>`;
+}
+
+function sellerbars(){
+  const S=fSellers().filter(s=>!s.is_extra).slice().sort((a,b)=>{
+    const av=a.coverage==null?99:a.coverage,bv=b.coverage==null?99:b.coverage;return av-bv});
+  const CAP=4;const w=x=>Math.min((x==null?CAP:x),CAP)/CAP*100;
+  let h='';
+  for(const s of S){
+    const key=stkey(s);const col=STAT[key][3];
+    const lab=s.coverage==null?'∞':s.coverage.toFixed(1)+'×';
+    h+=`<div class="brow" data-nm="${s.name}">
+      <div class="nm">${s.name}<br><span class="rg">${s.region}</span></div>
+      <div class="track"><div class="fill" style="width:${w(s.coverage)}%;background:${col}"></div>
+        <div class="rl" style="left:${100/CAP}%"></div><div class="rl rl15" style="left:${1.5/CAP*100}%"></div></div>
+      <div class="rt" style="color:${col}">${lab}</div></div>`;
+  }
+  h+=`<div class="axis"><div></div><div class="sc"><span class="tk" style="left:0%">0×</span>
+     <span class="tk" style="left:${100/CAP}%">1×</span><span class="tk" style="left:${1.5/CAP*100}%">1.5×</span>
+     <span class="tk" style="left:50%">2×</span><span class="tk" style="left:75%">3×</span><span class="tk" style="left:100%">4×+</span></div><div></div></div>`;
+  const el=document.getElementById('sellerbars');el.innerHTML=h;
+  el.querySelectorAll('.brow').forEach(row=>{
+    const s=DATA.sellers.find(x=>x.name===row.dataset.nm);
+    row.onmousemove=e=>showTip(`<b>${s.name}</b> · ${s.region}<br>`+
+      trow('Monthly target',fmt$(s.monthly_target))+trow('Won (Sep)',fmt$(s.secured))+
+      trow('Gap',fmt$(s.gap))+trow('Open pipeline',fmt$(s.pipeline))+trow('Weighted',fmt$(s.weighted))+
+      trow('Coverage',(s.coverage==null?'∞':s.coverage.toFixed(2)+'×'))+
+      trow('2H attainment',(s.ptd_attain*100).toFixed(0)+'%'),e);
+    row.onmouseleave=hideTip;
+  });
+}
+
+function regionbars(){
+  const R=fRegions().slice().sort((a,b)=>(a.coverage==null?99:a.coverage)-(b.coverage==null?99:b.coverage));
+  const CAP=4;const w=x=>Math.min((x==null?CAP:x),CAP)/CAP*100;let h='';
+  for(const r of R){const key=r.status==='attained'?'attain':r.status;const col=STAT[key][3];
+    h+=`<div class="brow" data-rg="${r.region}"><div class="nm">${r.region}<br><span class="rg">${r.team}</span></div>
+      <div class="track"><div class="fill" style="width:${w(r.coverage)}%;background:${col}"></div>
+      <div class="rl" style="left:${100/CAP}%"></div><div class="rl rl15" style="left:${1.5/CAP*100}%"></div></div>
+      <div class="rt" style="color:${col}">${r.coverage==null?'∞':r.coverage.toFixed(1)+'×'}</div></div>`;}
+  const el=document.getElementById('regionbars');el.innerHTML=h;
+  el.querySelectorAll('.brow').forEach(row=>{const r=DATA.regions.find(x=>x.region===row.dataset.rg);
+    row.onmousemove=e=>showTip(`<b>${r.region}</b> · ${r.team}<br>`+trow('Monthly target',fmt$(r.monthly_target))+
+      trow('Won (Sep)',fmt$(r.secured))+trow('Gap',fmt$(r.gap))+trow('Pipeline',fmt$(r.pipeline))+
+      trow('Coverage',(r.coverage==null?'∞':r.coverage.toFixed(2)+'×')),e);
+    row.onmouseleave=hideTip;});
+}
+
+function quad(){
+  const S=fSellers().filter(s=>!s.is_extra&&s.gap>0);
+  const W=520,H=300,pl=44,pr=16,pt=14,pb=34;
+  const xmax=0.6,ymax=4;const covPace=0.333;const covTgt=1.5;
+  const X=v=>pl+Math.min(v,xmax)/xmax*(W-pl-pr);
+  const Y=v=>H-pb-Math.min(v==null?ymax:v,ymax)/ymax*(H-pt-pb);
+  const gmax=Math.max(...S.map(s=>s.gap),1);const R=g=>6+Math.sqrt(g/gmax)*15;
+  let m=`<svg class="quad" viewBox="0 0 ${W} ${H}" role="img" aria-label="Attainment vs coverage risk map">`;
+  // danger quadrant shade
+  m+=`<rect x="${pl}" y="${Y(covPace)}" width="${X(covPace/1.8)-pl}" height="${H-pb-Y(covPace)}" fill="var(--under)" opacity="0.06"/>`;
+  m+=`<line x1="${X(covPace)}" y1="${pt}" x2="${X(covPace)}" y2="${H-pb}" stroke="var(--muted)" stroke-dasharray="4 4" opacity=".5"/>`;
+  m+=`<line x1="${pl}" y1="${Y(covTgt)}" x2="${W-pr}" y2="${Y(covTgt)}" stroke="var(--covered)" stroke-dasharray="4 4" opacity=".55"/>`;
+  m+=`<line x1="${pl}" y1="${Y(1)}" x2="${W-pr}" y2="${Y(1)}" stroke="var(--muted)" stroke-dasharray="2 4" opacity=".4"/>`;
+  // axes labels
+  m+=`<text x="${pl}" y="${H-8}" fill="var(--muted)" font-size="10">behind ← 2H attainment → ahead</text>`;
+  m+=`<text x="8" y="${pt+8}" fill="var(--muted)" font-size="10" transform="rotate(-90 8 ${pt+8})" >coverage ×</text>`;
+  [0,1,1.5,2,3,4].forEach(t=>{m+=`<text x="${pl-6}" y="${Y(t)+3}" text-anchor="end" fill="var(--muted)" font-size="9">${t}×</text>`});
+  [0,.2,.33,.4,.6].forEach(t=>{m+=`<text x="${X(t)}" y="${H-pb+13}" text-anchor="middle" fill="var(--muted)" font-size="9">${Math.round(t*100)}%</text>`});
+  m+=`<text x="${X(covPace)+4}" y="${pt+10}" fill="var(--muted)" font-size="9">~pace</text>`;
+  for(const s of S){const col=STAT[stkey(s)][3];
+    m+=`<circle class="qd" data-nm="${s.name}" cx="${X(s.ptd_attain)}" cy="${Y(s.coverage)}" r="${R(s.gap)}"
+      fill="${col}" fill-opacity="0.62" stroke="var(--panel)" stroke-width="1.5"/>`;}
+  m+=`</svg>`;
+  const el=document.getElementById('quad');el.innerHTML=m;
+  el.querySelectorAll('.qd').forEach(c=>{const s=DATA.sellers.find(x=>x.name===c.dataset.nm);
+    c.onmousemove=e=>showTip(`<b>${s.name}</b> · ${s.region}<br>`+trow('2H attainment',(s.ptd_attain*100).toFixed(0)+'%')+
+      trow('Coverage',(s.coverage==null?'∞':s.coverage.toFixed(2)+'×'))+trow('Gap',fmt$(s.gap)),e);
+    c.onmouseleave=hideTip;});
+}
+
+function web(){
+  const Wd=fWeb();const totT=Wd.reduce((a,w)=>a+w.target,0),totS=Wd.reduce((a,w)=>a+w.sold,0),totP=Wd.reduce((a,w)=>a+w.pipe_opps,0);
+  document.getElementById('webdesc').innerHTML=`Websites carry a hard VP target of <b>${totT}</b> for the month. Only <b>${totS}</b> are sold and <b>${totP}</b> more sit in open opportunities — so the black target line is the bar to beat. The colored fill is sold + open opps; regions where it falls short of the line are under-covered on websites.`;
+  const maxScale=Math.max(...Wd.map(w=>Math.max(w.target,w.sold+w.pipe_opps)),1);
+  let h='';
+  for(const w of Wd.slice().sort((a,b)=>(a.coverage==null?9:a.coverage)-(b.coverage==null?9:b.coverage))){
+    const key=w.status==='attained'?'attain':w.status;const col=STAT[key][3];
+    const sc=x=>x/maxScale*100;
+    const st='var(--st4)';
+    h+=`<div class="wcard" data-rg="${w.region}">
+      <div class="wtop"><span class="wrg">${w.region}</span><span class="tag ${STAT[key][2]}"><span class="dot ${STAT[key][1]}"></span>${STAT[key][0]}</span></div>
+      <div class="wbar">
+        <div class="wseg" style="width:${sc(w.sold)}%;background:${col}"></div>
+        <div class="wseg" style="width:${sc(w.pipe_opps)}%;background:${col};opacity:.4"></div>
+        <div class="wtarget" style="left:${sc(w.target)}%"></div></div>
+      <div class="wnums"><span><b>${w.sold}</b> sold + <b>${w.pipe_opps}</b> open</span><span>target <b>${w.target}</b></span></div>
+    </div>`;
+  }
+  const el=document.getElementById('webcards');el.innerHTML=h;
+  el.querySelectorAll('.wcard').forEach(card=>{const w=DATA.web.find(x=>x.region===card.dataset.rg);
+    card.onmousemove=e=>showTip(`<b>${w.region}</b> — websites<br>`+trow('VP target',w.target)+trow('Sold (Sep)',w.sold)+
+      trow('Closing',w.closing)+trow('Follow-Up',w.followup)+trow('Early',w.early)+
+      trow('Coverage',(w.coverage==null?'—':w.coverage.toFixed(2)+'×')),e);
+    card.onmouseleave=hideTip;});
+}
+
+function lists(){
+  const S=fSellers().filter(s=>!s.is_extra&&!s.open&&s.gap>0);
+  const under=S.filter(s=>s.coverage!=null&&s.coverage<1).sort((a,b)=>b.gap-a.gap).slice(0,8);
+  const over=fSellers().filter(s=>!s.is_extra&&!s.open&&(s.status==='covered'||s.status==='attained')).sort((a,b)=>{
+    const av=a.coverage==null?99:a.coverage,bv=b.coverage==null?99:b.coverage;return bv-av}).slice(0,8);
+  const li=(s,showcov)=>`<li><div><span class="who">${s.name}</span> <span class="det">· ${s.region}</span><br>
+    <span class="det">gap ${fmt$(s.gap)}${s.secured?' · won '+fmt$(s.secured):''}</span></div>
+    <span class="rr" style="color:${STAT[stkey(s)][3]}">${s.coverage==null?'at goal':s.coverage.toFixed(2)+'×'}</span></li>`;
+  document.getElementById('underlist').innerHTML=under.length?under.map(s=>li(s)).join(''):'<li class="det">No under-covered seats in this team.</li>';
+  document.getElementById('overlist').innerHTML=over.length?over.map(s=>li(s)).join(''):'<li class="det">None.</li>';
+  // open territories
+  const open=fSellers().filter(s=>s.open).sort((a,b)=>b.monthly_target-a.monthly_target);
+  const panel=document.getElementById('openpanel');
+  if(open.length){panel.style.display='';
+    const goalSum=open.reduce((a,s)=>a+s.monthly_target,0);
+    document.getElementById('opensub').innerHTML=`${open.length} vacant ${open.length>1?'territories':'territory'} carrying <b>${fmtK(goalSum)}</b> of monthly target with no rep and no open pipeline — the managers are holding what pipeline exists (see each region's Team / Unassigned line).`;
+    document.getElementById('openlist').innerHTML=open.map(s=>`<li>
+      <div><span class="who">${s.name.replace('OPEN — ','')}</span> <span class="det">· seat vacant</span><br>
+      <span class="det">monthly target ${fmt$(s.monthly_target)} · prior bookings ${fmt$(Math.round(s.ptd_attain*s.goal_2h))}</span></div>
+      <span class="tag t-open"><span class="dot b-open"></span>Open</span></li>`).join('');
+  } else {panel.style.display='none';}
+}
+
+let sortK='coverage',sortDir=1,sortT=false;
+function table(){
+  const S=fSellers().slice().sort((a,b)=>{
+    let av=a[sortK],bv=b[sortK];
+    if(sortT){av=(av||'').toString();bv=(bv||'').toString();return sortDir*av.localeCompare(bv)}
+    av=av==null?(sortK==='coverage'||sortK==='exp_coverage'?1e9:0):av;bv=bv==null?(sortK==='coverage'||sortK==='exp_coverage'?1e9:0):bv;
+    return sortDir*(av-bv)});
+  let h='';
+  for(const s of S){const key=stkey(s);
+    h+=`<tr><td class="nm"><span class="rowtag ${STAT[key][1]}"></span>${s.name}</td><td>${s.region}</td>
+      <td class="tnum">${fmt$(s.goal_2h)}</td><td class="tnum">${fmt$(s.monthly_target)}</td>
+      <td class="tnum">${fmt$(s.secured)}</td><td class="tnum">${fmt$(s.gap)}</td>
+      <td class="tnum">${fmt$(s.pipeline)}</td><td class="tnum">${fmt$(s.weighted)}</td>
+      <td class="tnum" style="font-weight:700;color:${STAT[key][3]}">${s.coverage==null?'∞':s.coverage.toFixed(2)+'×'}</td>
+      <td class="tnum">${s.exp_coverage==null?'∞':s.exp_coverage.toFixed(2)+'×'}</td>
+      <td class="tnum">${s.ptd_attain!=null?(s.ptd_attain*100).toFixed(0)+'%':'—'}</td></tr>`;}
+  document.getElementById('tbody').innerHTML=h;
+}
+document.querySelectorAll('#tbl thead th').forEach(th=>{th.onclick=()=>{
+  const k=th.dataset.k;if(k===sortK)sortDir*=-1;else{sortK=k;sortDir=th.dataset.t?1:1;}
+  sortT=!!th.dataset.t;if(!th.dataset.t&&k!==sortK){}table();};});
+
+function renderAll(){kpis();sellerbars();regionbars();quad();web();lists();table();}
+document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{
+  document.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');team=c.dataset.team;renderAll();});
+document.getElementById('themebtn').onclick=()=>{
+  const cur=document.documentElement.getAttribute('data-theme');
+  const next=cur==='dark'?'light':(cur==='light'?'dark':(matchMedia('(prefers-color-scheme: dark)').matches?'light':'dark'));
+  document.documentElement.setAttribute('data-theme',next);renderAll();};
+matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',renderAll);
+renderAll();
+</script>
