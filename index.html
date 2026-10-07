@@ -1,4 +1,4 @@
-<title>Pipeline Coverage Radar</title>
+<title>Website Coverage Radar</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 :root{
@@ -166,19 +166,19 @@ tbody td.nm{font-weight:600}
   <div class="hd">
     <div class="brand">
       <svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><rect x="14" y="4" width="8" height="14" rx="1.5" fill="#C09BEC"/><rect x="16" y="15" width="15" height="15" rx="2" fill="#A74DCE"/><rect x="6" y="20" width="11" height="10" rx="1.5" fill="#0F9ED5"/><rect x="15" y="30" width="7" height="7" rx="1.2" fill="#E97132"/></svg>
-      <div><div class="k">Cars Commerce</div><h1>Pipeline Coverage Radar</h1></div>
+      <div><div class="k">Cars Commerce</div><h1>Website Coverage Radar</h1></div>
     </div>
     <div class="meta">
       <div><b>Reporting month:</b> October 2026</div>
-      <div><b>Data as of:</b> Oct 5, 2026 &nbsp;•&nbsp; 2H26 (Jul–Dec)</div>
+      <div><b>Data as of:</b> Oct 7, 2026</div>
       <button class="themebtn" id="themebtn">◑ Theme</button>
     </div>
   </div>
 </header>
 <div class="method"><div class="in">
-  <b>Coverage</b> = open October pipeline ÷ this-month gap to goal, where the monthly target is each seat's 2H goal ÷ 6.
-  A seat reads <b style="color:var(--under)">Under-covered</b> below 1.0×, <b style="color:var(--watch)">Watch</b> 1.0–1.5×, <b style="color:var(--covered)">Covered</b> at 1.5×+.
-  Hover any bar or dot for the detail.
+  <b>Coverage</b> = open October website opportunities ÷ websites still needed to hit the VP regional target (target − sold).
+  A region reads <b style="color:var(--under)">Under-covered</b> below 1.0×, <b style="color:var(--watch)">Watch</b> 1.0–1.5×, <b style="color:var(--covered)">Covered</b> at 1.5×+.
+  Hover any card for the detail.
 </div></div>
 
 <div class="filters"><div class="in">
@@ -191,80 +191,20 @@ tbody td.nm{font-weight:600}
 </div></div>
 
 <div class="wrap">
-  <div class="kpis" id="kpis"></div>
-
-  <section>
-    <div class="sh"><h2>Revenue coverage</h2><span class="n">by Client Partner · October gap to goal</span></div>
-    <p class="sdesc">The gap is what each seat still needs to book this month; the bar is how many times over their open pipeline covers it. Short red bars are the seats to work — plenty of quota left and not enough pipeline behind it.</p>
-    <div class="grid2">
-      <div class="card">
-        <h3>Coverage by seller <span style="font-weight:400;color:var(--muted)">(low → high)</span></h3>
-        <p class="ch-sub">Bar = pipeline ÷ monthly gap, capped at 4×. Grey line = 1.0× (break-even), green line = 1.5× (target).</p>
-        <div id="sellerbars"></div>
-      </div>
-      <div class="card">
-        <h3>Where — coverage by region</h3>
-        <p class="ch-sub">Region pipeline ÷ region monthly gap.</p>
-        <div id="regionbars"></div>
-        <h3 style="margin-top:18px">Risk map</h3>
-        <p class="ch-sub">Half-elapsed pace is ~50% attainment (Jul–Sep complete). Bottom-left = behind on the half <em>and</em> thin on pipeline.</p>
-        <div id="quad"></div>
-        <div class="legrow">
-          <span><span class="dot b-under"></span>Under</span>
-          <span><span class="dot b-watch"></span>Watch</span>
-          <span><span class="dot b-covered"></span>Covered</span>
-          <span><span class="dot b-attain"></span>At/over goal</span>
-          <span style="color:var(--muted)">● size = $ gap</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <section>
     <div class="sh"><h2>Website coverage</h2><span class="n">vs VP regional target</span></div>
     <p class="sdesc" id="webdesc"></p>
     <div class="web" id="webcards"></div>
   </section>
 
-  <section>
-    <div class="card" id="openpanel" style="border-top:3px solid var(--openc);margin-bottom:16px;display:none">
-      <div class="sh" style="margin-bottom:2px"><h3 style="font-size:14px">Open territories — coverage at structural risk</h3></div>
-      <p class="ch-sub" id="opensub"></p>
-      <ul class="alist" id="openlist" style="display:grid;grid-template-columns:1fr 1fr;gap:0 28px"></ul>
-    </div>
-    <div class="acts">
-      <div class="card" style="border-top:3px solid var(--under)">
-        <h3>Under-covered — build pipeline now</h3>
-        <p class="ch-sub">Largest monthly gap with coverage under 1.0×.</p>
-        <ul class="alist" id="underlist"></ul>
-      </div>
-      <div class="card" style="border-top:3px solid var(--covered)">
-        <h3>Over-covered — pull forward / reallocate</h3>
-        <p class="ch-sub">Coverage 1.5×+ or already at goal — capacity to advance deals or coach peers.</p>
-        <ul class="alist" id="overlist"></ul>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <div class="sh"><h2>All seats</h2><span class="n">click a column to sort</span></div>
-    <div class="tblwrap"><table id="tbl"><thead><tr>
-      <th data-k="name" data-t="1">Client Partner</th><th data-k="region" data-t="1">Region</th>
-      <th data-k="goal_2h">2H Goal</th><th data-k="monthly_target">Mo. Target</th>
-      <th data-k="secured">Won (Oct)</th><th data-k="gap">Gap</th>
-      <th data-k="pipeline">Pipeline</th><th data-k="weighted">Wtd Pipe</th>
-      <th data-k="coverage">Coverage</th><th data-k="exp_coverage">Exp. Cov</th><th data-k="ptd_attain">2H Attain</th>
-    </tr></thead><tbody id="tbody"></tbody></table></div>
-  </section>
-
   <div class="foot">
-    <b>Method.</b> Coverage is a monthly-phased read: monthly target = 2H26 goal ÷ 6; gap = monthly target − October Closed Won; coverage = open October pipeline ÷ gap (a seat already at target shows no gap and is "At/over goal"). Expected (weighted) coverage discounts open pipeline by stage — Closing 80%, Presentation 40%, Follow-Up 25%, Discovery 10% — to reflect realistic close probability this month. Website coverage = open website opportunities ÷ (VP target − sold). Figures aggregate by Client Partner and roll to region per the Hierarchy tab. Only individuals listed in the Hierarchy tab are included — pipeline, bookings and website counts owned by anyone else (e.g. managers or former seat holders) are excluded, and vacant seats appear as Open. Source: CPPipelineTemplate1052026v3.xlsx, all October close dates; October Closed Won comes from the Actuals tab. Included pipeline reconciles to $2,383,260 (open $2,366,208 + Closed Won $17,052 in the pipeline pull).
+    <b>Method.</b> Coverage = open October website opportunities ÷ (VP regional target − websites sold); a region at or above target reads "At/over goal". Websites are opportunities with Product Offering = Website, counted once per opportunity (not per quote line). Sold = unique website opportunities closed in October per the Actuals tab, combined with Closed Won website opportunities in the pipeline pull (no double counting). Open = every other stage. Expected (weighted) coverage discounts open opportunities by stage — Closing 80%, Presentation 40%, Follow-Up 25%, Discovery 10% — shown in the hover detail. Regions roll up per the Hierarchy tab, and only individuals listed there are counted; website opportunities owned by anyone else are excluded. Targets come from the Target tab (October Website Target by Region). Source: CPPipelineTemplate1072026.xlsx, Pipeline1072026 tab (all October close dates).
   </div>
 </div>
 <div id="tip"></div>
 
 <script>
-const DATA={"sellers": [{"region": "Midwest", "team": "Field West", "name": "Chris Monforton", "is_extra": false, "goal_2h": 160000, "monthly_target": 26667, "secured": 1850, "gap": 24817, "pipeline": 97250, "weighted": 23613, "closing": 0, "presentation": 34933, "followup": 22718, "discovery": 39599, "coverage": 3.92, "exp_coverage": 0.95, "ptd_attain": 0.308, "status": "covered", "open": false}, {"region": "Florida", "team": "Field East", "name": "Michelle McKenna", "is_extra": false, "goal_2h": 293000, "monthly_target": 48833, "secured": 0, "gap": 48833, "pipeline": 121472, "weighted": 45456, "closing": 18243, "presentation": 59594, "followup": 17736, "discovery": 25899, "coverage": 2.49, "exp_coverage": 0.93, "ptd_attain": 0.496, "status": "covered", "open": false}, {"region": "Great Lakes", "team": "Field East", "name": "OPEN \u2014 Great Lakes", "is_extra": false, "goal_2h": 163500, "monthly_target": 27250, "secured": 0, "gap": 27250, "pipeline": 0, "weighted": 0, "closing": 0, "presentation": 0, "followup": 0, "discovery": 0, "coverage": 0.0, "exp_coverage": 0.0, "ptd_attain": 0.172, "status": "under", "open": true}, {"region": "Great Lakes", "team": "Field East", "name": "Robert Kwasneski", "is_extra": false, "goal_2h": 162000, "monthly_target": 27000, "secured": 0, "gap": 27000, "pipeline": 44123, "weighted": 15773, "closing": 5899, "presentation": 14781, "followup": 18645, "discovery": 4798, "coverage": 1.63, "exp_coverage": 0.58, "ptd_attain": 0.22, "status": "covered", "open": false}, {"region": "Inside", "team": "Inside", "name": "Mohammad Alam", "is_extra": false, "goal_2h": 171000, "monthly_target": 28500, "secured": 0, "gap": 28500, "pipeline": 247210, "weighted": 47594, "closing": 6634, "presentation": 59514, "followup": 2499, "discovery": 178563, "coverage": 8.67, "exp_coverage": 1.67, "ptd_attain": 0.245, "status": "covered", "open": false}, {"region": "Inside", "team": "Inside", "name": "Mike Egan", "is_extra": false, "goal_2h": 171000, "monthly_target": 28500, "secured": 0, "gap": 28500, "pipeline": 29388, "weighted": 7066, "closing": 649, "presentation": 11145, "followup": 2195, "discovery": 15399, "coverage": 1.03, "exp_coverage": 0.25, "ptd_attain": 0.199, "status": "watch", "open": false}, {"region": "Inside", "team": "Inside", "name": "Stephanie Watson", "is_extra": false, "goal_2h": 171000, "monthly_target": 28500, "secured": 2724, "gap": 25776, "pipeline": 296339, "weighted": 40312, "closing": 0, "presentation": 30500, "followup": 10187, "discovery": 255652, "coverage": 11.5, "exp_coverage": 1.56, "ptd_attain": 0.398, "status": "covered", "open": false}, {"region": "Inside", "team": "Inside", "name": "Dan Monk", "is_extra": false, "goal_2h": 171000, "monthly_target": 28500, "secured": 6499, "gap": 22001, "pipeline": 80480, "weighted": 26226, "closing": 1050, "presentation": 53833, "followup": 8620, "discovery": 16977, "coverage": 3.66, "exp_coverage": 1.19, "ptd_attain": 0.65, "status": "covered", "open": false}, {"region": "Inside", "team": "Inside", "name": "OPEN \u2014 Inside", "is_extra": false, "goal_2h": 171000, "monthly_target": 28500, "secured": 0, "gap": 28500, "pipeline": 0, "weighted": 0, "closing": 0, "presentation": 0, "followup": 0, "discovery": 0, "coverage": 0.0, "exp_coverage": 0.0, "ptd_attain": 0.226, "status": "under", "open": true}, {"region": "Southwest", "team": "Field West", "name": "Shelley Rutherford", "is_extra": false, "goal_2h": 182968, "monthly_target": 30495, "secured": 4366, "gap": 26129, "pipeline": 73454, "weighted": 10504, "closing": 999, "presentation": 3749, "followup": 8897, "discovery": 59809, "coverage": 2.81, "exp_coverage": 0.4, "ptd_attain": 0.451, "status": "covered", "open": false}, {"region": "Southwest", "team": "Field West", "name": "Dane Cronbaugh", "is_extra": false, "goal_2h": 164000, "monthly_target": 27333, "secured": 0, "gap": 27333, "pipeline": 105327, "weighted": 34006, "closing": 10729, "presentation": 47798, "followup": 10822, "discovery": 35978, "coverage": 3.85, "exp_coverage": 1.24, "ptd_attain": 0.324, "status": "covered", "open": false}, {"region": "Majors", "team": "Majors", "name": "Ryan Kwasneski", "is_extra": false, "goal_2h": 442000, "monthly_target": 73667, "secured": 4960, "gap": 68707, "pipeline": 244766, "weighted": 52557, "closing": 22329, "presentation": 41499, "followup": 0, "discovery": 180938, "coverage": 3.56, "exp_coverage": 0.76, "ptd_attain": 0.523, "status": "covered", "open": false}, {"region": "Majors", "team": "Majors", "name": "Ryan Altier", "is_extra": false, "goal_2h": 450000, "monthly_target": 75000, "secured": 0, "gap": 75000, "pipeline": 362828, "weighted": 103378, "closing": 0, "presentation": 223649, "followup": 0, "discovery": 139179, "coverage": 4.84, "exp_coverage": 1.38, "ptd_attain": 0.29, "status": "covered", "open": false}, {"region": "Majors", "team": "Majors", "name": "April Schenk", "is_extra": false, "goal_2h": 422000, "monthly_target": 70333, "secured": 999, "gap": 69334, "pipeline": 146523, "weighted": 36250, "closing": 1000, "presentation": 68798, "followup": 1725, "discovery": 75000, "coverage": 2.11, "exp_coverage": 0.52, "ptd_attain": 0.255, "status": "covered", "open": false}, {"region": "MidAtlantic", "team": "Field East", "name": "Alex Otwell", "is_extra": false, "goal_2h": 233000, "monthly_target": 38833, "secured": 750, "gap": 38083, "pipeline": 5494, "weighted": 549, "closing": 0, "presentation": 0, "followup": 0, "discovery": 5494, "coverage": 0.14, "exp_coverage": 0.01, "ptd_attain": 0.083, "status": "under", "open": false}, {"region": "MidSouth", "team": "Field East", "name": "Justin Tuttle", "is_extra": false, "goal_2h": 171000, "monthly_target": 28500, "secured": 0, "gap": 28500, "pipeline": 74588, "weighted": 15944, "closing": 0, "presentation": 17978, "followup": 20611, "discovery": 35999, "coverage": 2.62, "exp_coverage": 0.56, "ptd_attain": 0.214, "status": "covered", "open": false}, {"region": "MidSouth", "team": "Field East", "name": "Manny Lopez", "is_extra": false, "goal_2h": 178500, "monthly_target": 29750, "secured": 0, "gap": 29750, "pipeline": 88304, "weighted": 23718, "closing": 1677, "presentation": 27198, "followup": 37029, "discovery": 22400, "coverage": 2.97, "exp_coverage": 0.8, "ptd_attain": 0.216, "status": "covered", "open": false}, {"region": "Midwest", "team": "Field West", "name": "Madyson Lawrence", "is_extra": false, "goal_2h": 186750, "monthly_target": 31125, "secured": 0, "gap": 31125, "pipeline": 164033, "weighted": 48784, "closing": 12732, "presentation": 73091, "followup": 10273, "discovery": 67937, "coverage": 5.27, "exp_coverage": 1.57, "ptd_attain": 0.591, "status": "covered", "open": false}, {"region": "Northeast", "team": "Field East", "name": "OPEN \u2014 Northeast", "is_extra": false, "goal_2h": 197250, "monthly_target": 32875, "secured": 0, "gap": 32875, "pipeline": 0, "weighted": 0, "closing": 0, "presentation": 0, "followup": 0, "discovery": 0, "coverage": 0.0, "exp_coverage": 0.0, "ptd_attain": 0.176, "status": "under", "open": true}, {"region": "Northeast", "team": "Field East", "name": "Clinton Estell", "is_extra": false, "goal_2h": 185250, "monthly_target": 30875, "secured": 0, "gap": 30875, "pipeline": 43818, "weighted": 14029, "closing": 0, "presentation": 31145, "followup": 2024, "discovery": 10649, "coverage": 1.42, "exp_coverage": 0.45, "ptd_attain": 0.057, "status": "watch", "open": false}, {"region": "Northwest", "team": "Field West", "name": "Rob Karamanlian", "is_extra": false, "goal_2h": 166100, "monthly_target": 27683, "secured": 0, "gap": 27683, "pipeline": 90714, "weighted": 10509, "closing": 0, "presentation": 2000, "followup": 5582, "discovery": 83132, "coverage": 3.28, "exp_coverage": 0.38, "ptd_attain": 0.425, "status": "covered", "open": false}, {"region": "Northwest", "team": "Field West", "name": "Barrett Morrill", "is_extra": false, "goal_2h": 169100, "monthly_target": 28183, "secured": 0, "gap": 28183, "pipeline": 50097, "weighted": 8249, "closing": 0, "presentation": 10799, "followup": 0, "discovery": 39298, "coverage": 1.78, "exp_coverage": 0.29, "ptd_attain": 0.173, "status": "covered", "open": false}, {"region": "Texas", "team": "Field West", "name": "OPEN \u2014 Texas", "is_extra": false, "goal_2h": 267216, "monthly_target": 44536, "secured": 0, "gap": 44536, "pipeline": 0, "weighted": 0, "closing": 0, "presentation": 0, "followup": 0, "discovery": 0, "coverage": 0.0, "exp_coverage": 0.0, "ptd_attain": 0.414, "status": "under", "open": true}], "regions": [{"region": "Midwest", "team": "Field West", "monthly_target": 57792, "secured": 1850, "gap": 55942, "pipeline": 261283, "weighted": 72397, "closing": 12732, "presentation": 108024, "followup": 32991, "discovery": 107536, "goal_2h": 346750, "coverage": 4.67, "exp_coverage": 1.29, "status": "covered"}, {"region": "Florida", "team": "Field East", "monthly_target": 48833, "secured": 0, "gap": 48833, "pipeline": 121472, "weighted": 45456, "closing": 18243, "presentation": 59594, "followup": 17736, "discovery": 25899, "goal_2h": 293000, "coverage": 2.49, "exp_coverage": 0.93, "status": "covered"}, {"region": "Great Lakes", "team": "Field East", "monthly_target": 54250, "secured": 0, "gap": 54250, "pipeline": 44123, "weighted": 15773, "closing": 5899, "presentation": 14781, "followup": 18645, "discovery": 4798, "goal_2h": 325500, "coverage": 0.81, "exp_coverage": 0.29, "status": "under"}, {"region": "Inside", "team": "Inside", "monthly_target": 142500, "secured": 9223, "gap": 133277, "pipeline": 653417, "weighted": 121198, "closing": 8333, "presentation": 154992, "followup": 23501, "discovery": 466591, "goal_2h": 855000, "coverage": 4.9, "exp_coverage": 0.91, "status": "covered"}, {"region": "Southwest", "team": "Field West", "monthly_target": 57828, "secured": 4366, "gap": 53462, "pipeline": 178781, "weighted": 44510, "closing": 11728, "presentation": 51547, "followup": 19719, "discovery": 95787, "goal_2h": 346968, "coverage": 3.34, "exp_coverage": 0.83, "status": "covered"}, {"region": "Majors", "team": "Majors", "monthly_target": 219000, "secured": 5959, "gap": 213041, "pipeline": 754117, "weighted": 192185, "closing": 23329, "presentation": 333946, "followup": 1725, "discovery": 395117, "goal_2h": 1314000, "coverage": 3.54, "exp_coverage": 0.9, "status": "covered"}, {"region": "MidAtlantic", "team": "Field East", "monthly_target": 38833, "secured": 750, "gap": 38083, "pipeline": 5494, "weighted": 549, "closing": 0, "presentation": 0, "followup": 0, "discovery": 5494, "goal_2h": 233000, "coverage": 0.14, "exp_coverage": 0.01, "status": "under"}, {"region": "MidSouth", "team": "Field East", "monthly_target": 58250, "secured": 0, "gap": 58250, "pipeline": 162892, "weighted": 39662, "closing": 1677, "presentation": 45176, "followup": 57640, "discovery": 58399, "goal_2h": 349500, "coverage": 2.8, "exp_coverage": 0.68, "status": "covered"}, {"region": "Northeast", "team": "Field East", "monthly_target": 63750, "secured": 0, "gap": 63750, "pipeline": 43818, "weighted": 14029, "closing": 0, "presentation": 31145, "followup": 2024, "discovery": 10649, "goal_2h": 382500, "coverage": 0.69, "exp_coverage": 0.22, "status": "under"}, {"region": "Northwest", "team": "Field West", "monthly_target": 55866, "secured": 0, "gap": 55866, "pipeline": 140811, "weighted": 18758, "closing": 0, "presentation": 12799, "followup": 5582, "discovery": 122430, "goal_2h": 335200, "coverage": 2.52, "exp_coverage": 0.34, "status": "covered"}, {"region": "Texas", "team": "Field West", "monthly_target": 44536, "secured": 0, "gap": 44536, "pipeline": 0, "weighted": 0, "closing": 0, "presentation": 0, "followup": 0, "discovery": 0, "goal_2h": 267216, "coverage": 0.0, "exp_coverage": 0.0, "status": "under"}], "web": [{"region": "Midwest", "target": 5, "sold": 1, "closing": 1, "followup": 3, "early": 0, "remaining": 4, "pipe_opps": 4, "coverage": 1.0, "weighted": 1.6, "exp_coverage": 0.39, "status": "watch"}, {"region": "Florida", "target": 7, "sold": 0, "closing": 3, "followup": 3, "early": 0, "remaining": 7, "pipe_opps": 6, "coverage": 0.86, "weighted": 3.2, "exp_coverage": 0.45, "status": "under"}, {"region": "Great Lakes", "target": 7, "sold": 0, "closing": 0, "followup": 8, "early": 3, "remaining": 7, "pipe_opps": 11, "coverage": 1.57, "weighted": 3.2, "exp_coverage": 0.46, "status": "covered"}, {"region": "Inside", "target": 22, "sold": 2, "closing": 4, "followup": 9, "early": 8, "remaining": 20, "pipe_opps": 21, "coverage": 1.05, "weighted": 6.9, "exp_coverage": 0.34, "status": "watch"}, {"region": "Southwest", "target": 8, "sold": 0, "closing": 0, "followup": 2, "early": 2, "remaining": 8, "pipe_opps": 4, "coverage": 0.5, "weighted": 1.0, "exp_coverage": 0.12, "status": "under"}, {"region": "Majors", "target": 34, "sold": 1, "closing": 1, "followup": 1, "early": 2, "remaining": 33, "pipe_opps": 4, "coverage": 0.12, "weighted": 1.6, "exp_coverage": 0.05, "status": "under"}, {"region": "MidAtlantic", "target": 6, "sold": 0, "closing": 0, "followup": 0, "early": 1, "remaining": 6, "pipe_opps": 1, "coverage": 0.17, "weighted": 0.1, "exp_coverage": 0.02, "status": "under"}, {"region": "MidSouth", "target": 5, "sold": 0, "closing": 0, "followup": 6, "early": 2, "remaining": 5, "pipe_opps": 8, "coverage": 1.6, "weighted": 2.0, "exp_coverage": 0.4, "status": "covered"}, {"region": "Northeast", "target": 7, "sold": 0, "closing": 0, "followup": 1, "early": 0, "remaining": 7, "pipe_opps": 1, "coverage": 0.14, "weighted": 0.2, "exp_coverage": 0.04, "status": "under"}, {"region": "Northwest", "target": 8, "sold": 0, "closing": 0, "followup": 3, "early": 4, "remaining": 8, "pipe_opps": 7, "coverage": 0.88, "weighted": 1.1, "exp_coverage": 0.14, "status": "under"}, {"region": "Texas", "target": 8, "sold": 0, "closing": 0, "followup": 0, "early": 0, "remaining": 8, "pipe_opps": 0, "coverage": 0.0, "weighted": 0, "exp_coverage": 0.0, "status": "under"}], "company": {"monthly_target": 841438, "secured": 22148, "pipeline": 2366208, "weighted": 564515, "goal_2h": 5048634, "gap": 819290, "coverage": 2.89, "exp_coverage": 0.69, "n_under": 1, "n_watch": 2, "n_covered": 16, "pipe_total": 2383260}, "weights": {"Closing": 0.8, "Presentation": 0.4, "FollowUp": 0.25, "Discovery": 0.1}, "month": "October 2026", "as_of": "Oct 5, 2026"};
+const DATA={"web": [{"region": "Midwest", "target": 5, "sold": 2, "closing": 0, "followup": 3, "early": 0, "remaining": 3, "pipe_opps": 3, "coverage": 1.0, "weighted": 0.8, "exp_coverage": 0.25, "status": "watch", "team": "Field West"}, {"region": "Florida", "target": 7, "sold": 0, "closing": 3, "followup": 3, "early": 0, "remaining": 7, "pipe_opps": 6, "coverage": 0.86, "weighted": 3.2, "exp_coverage": 0.45, "status": "under", "team": "Field East"}, {"region": "Great Lakes", "target": 7, "sold": 0, "closing": 0, "followup": 8, "early": 3, "remaining": 7, "pipe_opps": 11, "coverage": 1.57, "weighted": 3.2, "exp_coverage": 0.46, "status": "covered", "team": "Field East"}, {"region": "Inside", "target": 22, "sold": 2, "closing": 3, "followup": 9, "early": 8, "remaining": 20, "pipe_opps": 20, "coverage": 1.0, "weighted": 6.4, "exp_coverage": 0.32, "status": "watch", "team": "Inside"}, {"region": "Southwest", "target": 8, "sold": 1, "closing": 0, "followup": 1, "early": 2, "remaining": 7, "pipe_opps": 3, "coverage": 0.43, "weighted": 0.8, "exp_coverage": 0.11, "status": "under", "team": "Field West"}, {"region": "Majors", "target": 34, "sold": 1, "closing": 2, "followup": 1, "early": 2, "remaining": 33, "pipe_opps": 5, "coverage": 0.15, "weighted": 2.4, "exp_coverage": 0.07, "status": "under", "team": "Majors"}, {"region": "MidAtlantic", "target": 6, "sold": 0, "closing": 0, "followup": 0, "early": 1, "remaining": 6, "pipe_opps": 1, "coverage": 0.17, "weighted": 0.1, "exp_coverage": 0.02, "status": "under", "team": "Field East"}, {"region": "MidSouth", "target": 5, "sold": 0, "closing": 0, "followup": 6, "early": 2, "remaining": 5, "pipe_opps": 8, "coverage": 1.6, "weighted": 2.0, "exp_coverage": 0.4, "status": "covered", "team": "Field East"}, {"region": "Northeast", "target": 7, "sold": 0, "closing": 0, "followup": 1, "early": 0, "remaining": 7, "pipe_opps": 1, "coverage": 0.14, "weighted": 0.2, "exp_coverage": 0.04, "status": "under", "team": "Field East"}, {"region": "Northwest", "target": 8, "sold": 0, "closing": 0, "followup": 3, "early": 4, "remaining": 8, "pipe_opps": 7, "coverage": 0.88, "weighted": 1.1, "exp_coverage": 0.14, "status": "under", "team": "Field West"}, {"region": "Texas", "target": 8, "sold": 0, "closing": 0, "followup": 0, "early": 0, "remaining": 8, "pipe_opps": 0, "coverage": 0.0, "weighted": 0.0, "exp_coverage": 0.0, "status": "under", "team": "Field West"}], "month": "October 2026", "as_of": "Oct 7, 2026"};
 const fmtK=v=>v>=1000?'$'+(v/1000).toFixed(v>=100000?0:1)+'k':'$'+Math.round(v);
 const fmt$=v=>'$'+Math.round(v).toLocaleString();
 const STAT={under:['Under-covered','b-under','t-under','var(--under)'],watch:['Watch','b-watch','t-watch','var(--watch)'],
@@ -273,10 +213,7 @@ const STAT={under:['Under-covered','b-under','t-under','var(--under)'],watch:['W
 function stkey(s){return s.open?'open':(s.status==='attained'?'attain':s.status)}
 function scolor(s){return getComputedStyle(document.documentElement).getPropertyValue(STAT[stkey(s)][3].slice(4,-1))||STAT[stkey(s)][3]}
 let team='All';
-const realSellers=()=>DATA.sellers.filter(s=>!s.is_extra);
-const fSellers=()=>DATA.sellers.filter(s=>team==='All'||s.team===team);
-const fRegions=()=>DATA.regions.filter(r=>team==='All'||r.team===team);
-const fWeb=()=>{const rs=new Set(fRegions().map(r=>r.region));return DATA.web.filter(w=>rs.has(w.region))};
+const fWeb=()=>DATA.web.filter(w=>team==='All'||w.team===team);
 
 const tip=document.getElementById('tip');
 function showTip(html,e){tip.innerHTML=html;tip.style.opacity=1;moveTip(e)}
@@ -286,114 +223,9 @@ function moveTip(e){const p=12;let x=e.clientX+p,y=e.clientY+p;
 function hideTip(){tip.style.opacity=0}
 const trow=(k,v)=>`<div class="r"><span>${k}</span><b>${v}</b></div>`;
 
-function kpis(){
-  const S=fSellers();
-  const sum=k=>S.reduce((a,s)=>a+(s[k]||0),0);
-  const mt=sum('monthly_target'),sec=sum('secured'),pipe=sum('pipeline'),wtd=sum('weighted');
-  const gap=Math.max(mt-sec,0);const cov=gap>0?pipe/gap:null;const ecov=gap>0?wtd/gap:null;
-  const R=S.filter(s=>!s.is_extra&&!s.open);
-  const nu=R.filter(s=>s.status==='under').length,nw=R.filter(s=>s.status==='watch').length,
-        nc=R.filter(s=>s.status==='covered'||s.status==='attained').length,
-        no=S.filter(s=>s.open).length;
-  const covst=cov==null?'attain':(cov<1?'under':(cov<1.5?'watch':'covered'));
-  const cc=STAT[covst][3];
-  const pct=Math.min(cov?cov/3:1,1);const circ=2*Math.PI*30;const off=circ*(1-pct);
-  document.getElementById('kpis').innerHTML=`
-   <div class="kpi hero"><div class="cap">Team coverage · this month</div>
-     <div class="gauge" style="margin-top:8px">
-       <svg class="donut" viewBox="0 0 70 70"><circle cx="35" cy="35" r="30" fill="none" stroke="var(--line2)" stroke-width="8"/>
-         <circle cx="35" cy="35" r="30" fill="none" stroke="${cc}" stroke-width="8" stroke-linecap="round"
-           stroke-dasharray="${circ}" stroke-dashoffset="${off}" transform="rotate(-90 35 35)"/></svg>
-       <div><div class="covbig" style="color:${cc}">${cov==null?'∞':cov.toFixed(2)+'×'}</div>
-         <div class="sub" style="margin-top:3px">${fmtK(pipe)} pipeline ÷ ${fmtK(gap)} gap</div>
-         <div class="sub">Expected (weighted): <b>${ecov==null?'∞':ecov.toFixed(2)+'×'}</b></div></div>
-     </div></div>
-   <div class="kpi"><div class="cap">Monthly target</div><div class="v tnum">${fmtK(mt)}</div><div class="sub">2H goal ÷ 6</div></div>
-   <div class="kpi"><div class="cap">Won so far (Oct)</div><div class="v tnum">${fmtK(sec)}</div><div class="sub">${(sec/mt*100).toFixed(0)}% of monthly target</div></div>
-   <div class="kpi"><div class="cap">Gap to fill</div><div class="v tnum" style="color:var(--under)">${fmtK(gap)}</div><div class="sub">still to book this month</div></div>
-   <div class="kpi"><div class="cap">Seats by status</div>
-     <div class="v tnum" style="font-size:20px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-       <span class="tag t-under"><span class="dot b-under"></span>${nu}</span>
-       <span class="tag t-watch"><span class="dot b-watch"></span>${nw}</span>
-       <span class="tag t-covered"><span class="dot b-covered"></span>${nc}</span>
-       ${no?`<span class="tag t-open"><span class="dot b-open"></span>${no}</span>`:''}</div>
-     <div class="sub" style="margin-top:6px">under · watch · covered${no?' · open':''}</div></div>`;
-}
 
-function sellerbars(){
-  const S=fSellers().filter(s=>!s.is_extra).slice().sort((a,b)=>{
-    const av=a.coverage==null?99:a.coverage,bv=b.coverage==null?99:b.coverage;return av-bv});
-  const CAP=4;const w=x=>Math.min((x==null?CAP:x),CAP)/CAP*100;
-  let h='';
-  for(const s of S){
-    const key=stkey(s);const col=STAT[key][3];
-    const lab=s.coverage==null?'∞':s.coverage.toFixed(1)+'×';
-    h+=`<div class="brow" data-nm="${s.name}">
-      <div class="nm">${s.name}<br><span class="rg">${s.region}</span></div>
-      <div class="track"><div class="fill" style="width:${w(s.coverage)}%;background:${col}"></div>
-        <div class="rl" style="left:${100/CAP}%"></div><div class="rl rl15" style="left:${1.5/CAP*100}%"></div></div>
-      <div class="rt" style="color:${col}">${lab}</div></div>`;
-  }
-  h+=`<div class="axis"><div></div><div class="sc"><span class="tk" style="left:0%">0×</span>
-     <span class="tk" style="left:${100/CAP}%">1×</span><span class="tk" style="left:${1.5/CAP*100}%">1.5×</span>
-     <span class="tk" style="left:50%">2×</span><span class="tk" style="left:75%">3×</span><span class="tk" style="left:100%">4×+</span></div><div></div></div>`;
-  const el=document.getElementById('sellerbars');el.innerHTML=h;
-  el.querySelectorAll('.brow').forEach(row=>{
-    const s=DATA.sellers.find(x=>x.name===row.dataset.nm);
-    row.onmousemove=e=>showTip(`<b>${s.name}</b> · ${s.region}<br>`+
-      trow('Monthly target',fmt$(s.monthly_target))+trow('Won (Oct)',fmt$(s.secured))+
-      trow('Gap',fmt$(s.gap))+trow('Open pipeline',fmt$(s.pipeline))+trow('Weighted',fmt$(s.weighted))+
-      trow('Coverage',(s.coverage==null?'∞':s.coverage.toFixed(2)+'×'))+
-      trow('2H attainment',(s.ptd_attain*100).toFixed(0)+'%'),e);
-    row.onmouseleave=hideTip;
-  });
-}
 
-function regionbars(){
-  const R=fRegions().slice().sort((a,b)=>(a.coverage==null?99:a.coverage)-(b.coverage==null?99:b.coverage));
-  const CAP=4;const w=x=>Math.min((x==null?CAP:x),CAP)/CAP*100;let h='';
-  for(const r of R){const key=r.status==='attained'?'attain':r.status;const col=STAT[key][3];
-    h+=`<div class="brow" data-rg="${r.region}"><div class="nm">${r.region}<br><span class="rg">${r.team}</span></div>
-      <div class="track"><div class="fill" style="width:${w(r.coverage)}%;background:${col}"></div>
-      <div class="rl" style="left:${100/CAP}%"></div><div class="rl rl15" style="left:${1.5/CAP*100}%"></div></div>
-      <div class="rt" style="color:${col}">${r.coverage==null?'∞':r.coverage.toFixed(1)+'×'}</div></div>`;}
-  const el=document.getElementById('regionbars');el.innerHTML=h;
-  el.querySelectorAll('.brow').forEach(row=>{const r=DATA.regions.find(x=>x.region===row.dataset.rg);
-    row.onmousemove=e=>showTip(`<b>${r.region}</b> · ${r.team}<br>`+trow('Monthly target',fmt$(r.monthly_target))+
-      trow('Won (Oct)',fmt$(r.secured))+trow('Gap',fmt$(r.gap))+trow('Pipeline',fmt$(r.pipeline))+
-      trow('Coverage',(r.coverage==null?'∞':r.coverage.toFixed(2)+'×')),e);
-    row.onmouseleave=hideTip;});
-}
 
-function quad(){
-  const S=fSellers().filter(s=>!s.is_extra&&s.gap>0);
-  const W=520,H=300,pl=44,pr=16,pt=14,pb=34;
-  const xmax=0.8,ymax=4;const covPace=0.5;const covTgt=1.5;
-  const X=v=>pl+Math.min(v,xmax)/xmax*(W-pl-pr);
-  const Y=v=>H-pb-Math.min(v==null?ymax:v,ymax)/ymax*(H-pt-pb);
-  const gmax=Math.max(...S.map(s=>s.gap),1);const R=g=>6+Math.sqrt(g/gmax)*15;
-  let m=`<svg class="quad" viewBox="0 0 ${W} ${H}" role="img" aria-label="Attainment vs coverage risk map">`;
-  // danger quadrant shade
-  m+=`<rect x="${pl}" y="${Y(1)}" width="${X(covPace)-pl}" height="${H-pb-Y(1)}" fill="var(--under)" opacity="0.06"/>`;
-  m+=`<line x1="${X(covPace)}" y1="${pt}" x2="${X(covPace)}" y2="${H-pb}" stroke="var(--muted)" stroke-dasharray="4 4" opacity=".5"/>`;
-  m+=`<line x1="${pl}" y1="${Y(covTgt)}" x2="${W-pr}" y2="${Y(covTgt)}" stroke="var(--covered)" stroke-dasharray="4 4" opacity=".55"/>`;
-  m+=`<line x1="${pl}" y1="${Y(1)}" x2="${W-pr}" y2="${Y(1)}" stroke="var(--muted)" stroke-dasharray="2 4" opacity=".4"/>`;
-  // axes labels
-  m+=`<text x="${pl}" y="${H-8}" fill="var(--muted)" font-size="10">behind ← 2H attainment → ahead</text>`;
-  m+=`<text x="8" y="${pt+8}" fill="var(--muted)" font-size="10" transform="rotate(-90 8 ${pt+8})" >coverage ×</text>`;
-  [0,1,1.5,2,3,4].forEach(t=>{m+=`<text x="${pl-6}" y="${Y(t)+3}" text-anchor="end" fill="var(--muted)" font-size="9">${t}×</text>`});
-  [0,.2,.4,.5,.6,.8].forEach(t=>{m+=`<text x="${X(t)}" y="${H-pb+13}" text-anchor="middle" fill="var(--muted)" font-size="9">${Math.round(t*100)}%</text>`});
-  m+=`<text x="${X(covPace)+4}" y="${pt+10}" fill="var(--muted)" font-size="9">~pace</text>`;
-  for(const s of S){const col=STAT[stkey(s)][3];
-    m+=`<circle class="qd" data-nm="${s.name}" cx="${X(s.ptd_attain)}" cy="${Y(s.coverage)}" r="${R(s.gap)}"
-      fill="${col}" fill-opacity="0.62" stroke="var(--panel)" stroke-width="1.5"/>`;}
-  m+=`</svg>`;
-  const el=document.getElementById('quad');el.innerHTML=m;
-  el.querySelectorAll('.qd').forEach(c=>{const s=DATA.sellers.find(x=>x.name===c.dataset.nm);
-    c.onmousemove=e=>showTip(`<b>${s.name}</b> · ${s.region}<br>`+trow('2H attainment',(s.ptd_attain*100).toFixed(0)+'%')+
-      trow('Coverage',(s.coverage==null?'∞':s.coverage.toFixed(2)+'×'))+trow('Gap',fmt$(s.gap)),e);
-    c.onmouseleave=hideTip;});
-}
 
 function web(){
   const Wd=fWeb();const totT=Wd.reduce((a,w)=>a+w.target,0),totS=Wd.reduce((a,w)=>a+w.sold,0),totP=Wd.reduce((a,w)=>a+w.pipe_opps,0);
@@ -421,52 +253,8 @@ function web(){
     card.onmouseleave=hideTip;});
 }
 
-function lists(){
-  const S=fSellers().filter(s=>!s.is_extra&&!s.open&&s.gap>0);
-  const under=S.filter(s=>s.coverage!=null&&s.coverage<1).sort((a,b)=>b.gap-a.gap).slice(0,8);
-  const over=fSellers().filter(s=>!s.is_extra&&!s.open&&(s.status==='covered'||s.status==='attained')).sort((a,b)=>{
-    const av=a.coverage==null?99:a.coverage,bv=b.coverage==null?99:b.coverage;return bv-av}).slice(0,8);
-  const li=(s,showcov)=>`<li><div><span class="who">${s.name}</span> <span class="det">· ${s.region}</span><br>
-    <span class="det">gap ${fmt$(s.gap)}${s.secured?' · won '+fmt$(s.secured):''}</span></div>
-    <span class="rr" style="color:${STAT[stkey(s)][3]}">${s.coverage==null?'at goal':s.coverage.toFixed(2)+'×'}</span></li>`;
-  document.getElementById('underlist').innerHTML=under.length?under.map(s=>li(s)).join(''):'<li class="det">No under-covered seats in this team.</li>';
-  document.getElementById('overlist').innerHTML=over.length?over.map(s=>li(s)).join(''):'<li class="det">None.</li>';
-  // open territories
-  const open=fSellers().filter(s=>s.open).sort((a,b)=>b.monthly_target-a.monthly_target);
-  const panel=document.getElementById('openpanel');
-  if(open.length){panel.style.display='';
-    const goalSum=open.reduce((a,s)=>a+s.monthly_target,0);
-    document.getElementById('opensub').innerHTML=`${open.length} vacant ${open.length>1?'territories':'territory'} carrying <b>${fmtK(goalSum)}</b> of monthly target with no rep in the Hierarchy and no open pipeline. Prior bookings are the seat's July–October bookings under previous occupants.`;
-    document.getElementById('openlist').innerHTML=open.map(s=>`<li>
-      <div><span class="who">${s.name.replace('OPEN — ','')}</span> <span class="det">· seat vacant</span><br>
-      <span class="det">monthly target ${fmt$(s.monthly_target)} · prior bookings ${fmt$(Math.round(s.ptd_attain*s.goal_2h))}</span></div>
-      <span class="tag t-open"><span class="dot b-open"></span>Open</span></li>`).join('');
-  } else {panel.style.display='none';}
-}
 
-let sortK='coverage',sortDir=1,sortT=false;
-function table(){
-  const S=fSellers().slice().sort((a,b)=>{
-    let av=a[sortK],bv=b[sortK];
-    if(sortT){av=(av||'').toString();bv=(bv||'').toString();return sortDir*av.localeCompare(bv)}
-    av=av==null?(sortK==='coverage'||sortK==='exp_coverage'?1e9:0):av;bv=bv==null?(sortK==='coverage'||sortK==='exp_coverage'?1e9:0):bv;
-    return sortDir*(av-bv)});
-  let h='';
-  for(const s of S){const key=stkey(s);
-    h+=`<tr><td class="nm"><span class="rowtag ${STAT[key][1]}"></span>${s.name}</td><td>${s.region}</td>
-      <td class="tnum">${fmt$(s.goal_2h)}</td><td class="tnum">${fmt$(s.monthly_target)}</td>
-      <td class="tnum">${fmt$(s.secured)}</td><td class="tnum">${fmt$(s.gap)}</td>
-      <td class="tnum">${fmt$(s.pipeline)}</td><td class="tnum">${fmt$(s.weighted)}</td>
-      <td class="tnum" style="font-weight:700;color:${STAT[key][3]}">${s.coverage==null?'∞':s.coverage.toFixed(2)+'×'}</td>
-      <td class="tnum">${s.exp_coverage==null?'∞':s.exp_coverage.toFixed(2)+'×'}</td>
-      <td class="tnum">${s.ptd_attain!=null?(s.ptd_attain*100).toFixed(0)+'%':'—'}</td></tr>`;}
-  document.getElementById('tbody').innerHTML=h;
-}
-document.querySelectorAll('#tbl thead th').forEach(th=>{th.onclick=()=>{
-  const k=th.dataset.k;if(k===sortK)sortDir*=-1;else{sortK=k;sortDir=th.dataset.t?1:1;}
-  sortT=!!th.dataset.t;if(!th.dataset.t&&k!==sortK){}table();};});
-
-function renderAll(){kpis();sellerbars();regionbars();quad();web();lists();table();}
+function renderAll(){web();}
 document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{
   document.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');team=c.dataset.team;renderAll();});
 document.getElementById('themebtn').onclick=()=>{
